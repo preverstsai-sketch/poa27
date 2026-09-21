@@ -350,16 +350,45 @@
     }
     body.innerHTML = list.map(function (s, i) {
       var wd = s.status === 'Withdrawn';
+      var media = '';
+      if (s.type === '攝影') {
+        media = '<button class="btn small ghost" id="btnPhoto-' + i + '" onclick="viewPhoto(' + i + ')">查看照片</button>' +
+                '<div id="photoBox-' + i + '" style="display:none;margin-top:10px;"></div>';
+      } else if (s.youtube) {
+        media = '<div style="font-size:14px;margin-top:6px;">🎬 <a href="' + esc(s.youtube) + '" target="_blank" rel="noopener" style="color:var(--blue);">觀看影片（YouTube）</a></div>';
+      }
       return '<div class="item">' +
         '<div class="title">' + esc(s.title) +
         '<span class="badge' + (wd ? ' wd' : '') + '">' + (wd ? '已撤回' : esc(s.type)) + '</span></div>' +
-        '<div class="meta">' + esc(s.id) + '｜' + esc(s.clubZh) + '｜更新：' + esc(s.updated) + '</div>' +
+        '<div class="meta">' + esc(s.id) + '｜' + esc(s.clubZh) + '｜' + esc(s.name) + '｜' + esc(s.zone) + '｜更新：' + esc(s.updated) + '</div>' +
         '<div style="font-size:14px;margin-top:6px;">' + esc(s.desc) + '</div>' +
+        media +
         (wd ? '' :
           '<button class="btn small ghost" onclick="startEdit(' + i + ')">修改</button>' +
           '<button class="btn small danger" onclick="withdraw(\'' + esc(s.id) + '\')">撤回</button>') +
         '</div>';
     }).join('');
+  }
+
+  var photoCache = {};
+  async function viewPhoto(i) {
+    var s = state.list[i];
+    var box = document.getElementById('photoBox-' + i);
+    var btn = document.getElementById('btnPhoto-' + i);
+    if (box.style.display !== 'none') { box.style.display = 'none'; btn.textContent = '查看照片'; return; }
+    box.style.display = '';
+    btn.textContent = '收合照片';
+    if (photoCache[s.id]) { box.innerHTML = photoCache[s.id]; return; }
+    box.innerHTML = '<div class="loading">照片載入中…</div>';
+    try {
+      var res = await api('photo', { token: state.token, id: s.id });
+      var img = '<img src="data:' + res.mimeType + ';base64,' + res.base64 + '" style="max-width:100%;border-radius:10px;" alt="' + esc(s.title) + '">';
+      photoCache[s.id] = img;
+      box.innerHTML = img;
+    } catch (e) {
+      box.innerHTML = '<div class="msg err" style="display:block">' + esc(e.message || e) + '</div>';
+      if (sessionExpired(e)) return;
+    }
   }
   async function withdraw(id) {
     if (!confirm('確定撤回作品 ' + id + '？撤回後將不列入遴選。')) return;
@@ -478,6 +507,7 @@
         res = await api('create', { token: state.token, payload: p });
       }
       state.editingId = null;
+      photoCache = {};
       resetForm();
       showTab('list');
       alert(isEdit ? '修改已儲存' : '投稿成功！作品編號 ' + res.id + '，確認信已寄至您的 Email。');
