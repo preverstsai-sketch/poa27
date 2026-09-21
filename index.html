@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RID3481 2027 People of Action 作品募集</title>
+  <style>
+    :root {
+      --blue: #17458f;      /* Rotary Azure */
+      --gold: #f7a81b;      /* Rotary Gold */
+      --bg: #f4f6fa;
+      --card: #ffffff;
+      --text: #1c2733;
+      --muted: #64748b;
+      --danger: #c0392b;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: "Noto Sans TC", -apple-system, "Segoe UI", sans-serif;
+      font-size: 16px; line-height: 1.6;
+    }
+    .wrap { max-width: 560px; margin: 0 auto; padding: 16px 16px 64px; }
+    header {
+      background: var(--blue); color: #fff; text-align: center;
+      padding: 28px 16px 22px; border-radius: 0 0 24px 24px;
+    }
+    header h1 { margin: 0 0 4px; font-size: 22px; }
+    header .sub { opacity: .85; font-size: 14px; }
+    .countdown {
+      display: inline-block; margin-top: 12px; background: var(--gold); color: #1c2733;
+      font-weight: 700; padding: 6px 16px; border-radius: 999px; font-size: 14px;
+    }
+    .card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 20px; margin-top: 16px; box-shadow: 0 1px 4px rgba(16,35,70,.08);
+    }
+    .card h2 { margin: 0 0 12px; font-size: 18px; color: var(--blue); }
+    label { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 4px; }
+    label .req { color: var(--danger); }
+    input[type=text], input[type=email], input[type=tel], input[type=url], textarea, select {
+      width: 100%; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 10px;
+      font-size: 16px; font-family: inherit; background: #fff;
+    }
+    textarea { resize: vertical; min-height: 88px; }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .btn {
+      display: block; width: 100%; padding: 13px; margin-top: 18px;
+      background: var(--blue); color: #fff; border: 0; border-radius: 10px;
+      font-size: 17px; font-weight: 700; cursor: pointer;
+    }
+    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn.gold { background: var(--gold); color: #1c2733; }
+    .btn.ghost { background: #fff; color: var(--blue); border: 1.5px solid var(--blue); }
+    .btn.small { width: auto; display: inline-block; padding: 8px 16px; font-size: 14px; margin: 8px 8px 0 0; }
+    .btn.danger { background: #fff; color: var(--danger); border: 1.5px solid var(--danger); }
+    .segment { display: flex; gap: 8px; margin-top: 6px; }
+    .segment button {
+      flex: 1; padding: 11px; border: 1.5px solid #cbd5e1; background: #fff;
+      border-radius: 10px; font-size: 16px; cursor: pointer; font-family: inherit;
+    }
+    .segment button.on { border-color: var(--blue); background: #e8effc; color: var(--blue); font-weight: 700; }
+    .consent { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 14px; }
+    .consent input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+    .msg { margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: 14px; display: none; }
+    .msg.err { background: #fdecea; color: var(--danger); display: block; }
+    .msg.ok { background: #e8f6ee; color: #1e7a46; display: block; }
+    .item { border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-top: 12px; }
+    .item .title { font-weight: 700; font-size: 16px; }
+    .item .meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .badge {
+      display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px;
+      background: #e8effc; color: var(--blue); font-weight: 600; margin-left: 6px;
+    }
+    .badge.wd { background: #f1f5f9; color: var(--muted); }
+    .charcount { float: right; font-weight: 400; color: var(--muted); font-size: 12px; }
+    .tabs { display: flex; gap: 8px; margin-top: 16px; }
+    .tabs button {
+      flex: 1; padding: 11px; border: 0; border-radius: 10px; font-size: 15px;
+      background: #e2e8f0; cursor: pointer; font-family: inherit; font-weight: 600;
+    }
+    .tabs button.on { background: var(--blue); color: #fff; }
+    .loading { text-align: center; color: var(--muted); padding: 24px 0; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 13px; color: var(--muted); }
+    .topbar a { color: var(--blue); cursor: pointer; text-decoration: underline; }
+    footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 32px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>People of Action<br>攝影暨短影音作品募集</h1>
+  <div class="sub">國際扶輪3481地區 2027</div>
+  <div class="countdown" id="countdown">載入中…</div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ 畫面一：Email ============ -->
+  <div class="card" id="viewEmail">
+    <h2>投稿 / 查詢我的作品</h2>
+    <p style="font-size:14px;color:var(--muted);margin:0;">
+      不需註冊帳號。輸入 Email 即可投稿或管理自己的作品，第一次使用會寄驗證碼確認信箱。
+    </p>
+    <label>Email <span class="req">*</span></label>
+    <input type="email" id="inEmail" placeholder="you@example.com" autocomplete="email">
+    <button class="btn" id="btnSendOtp" onclick="doLogin()">登入 / 開始投稿</button>
+    <div class="msg" id="msgEmail"></div>
+  </div>
+
+  <!-- ============ 畫面二：驗證碼 ============ -->
+  <div class="card" id="viewOtp" style="display:none">
+    <h2>輸入驗證碼</h2>
+    <p style="font-size:14px;color:var(--muted);margin:0;">
+      第一次使用這個 Email，驗證碼已寄至 <b id="otpEmailShow"></b>，10 分鐘內有效。沒收到請檢查垃圾信件匣。驗證一次之後，以後輸入 Email 就能直接登入。
+    </p>
+    <label>6 位數驗證碼 <span class="req">*</span></label>
+    <input type="text" id="inOtp" inputmode="numeric" maxlength="6" placeholder="000000"
+           style="letter-spacing:8px;font-size:22px;text-align:center;">
+    <button class="btn" id="btnVerify" onclick="verifyOtp()">驗證</button>
+    <button class="btn ghost" onclick="backToEmail()">重新輸入 Email</button>
+    <div class="msg" id="msgOtp"></div>
+  </div>
+
+  <!-- ============ 畫面三：主頁（已登入） ============ -->
+  <div id="viewMain" style="display:none">
+    <div class="topbar">
+      <span id="loginAs"></span><a onclick="logout()">登出</a>
+    </div>
+    <div class="tabs">
+      <button id="tabList" class="on" onclick="showTab('list')">我的投稿</button>
+      <button id="tabForm" onclick="showTab('form')">新增作品</button>
+    </div>
+
+    <!-- 我的投稿 -->
+    <div class="card" id="paneList">
+      <div class="loading" id="listLoading">載入中…</div>
+      <div id="listBody"></div>
+    </div>
+
+    <!-- 新增 / 編輯 -->
+    <div class="card" id="paneForm" style="display:none">
+      <h2 id="formTitle">新增作品</h2>
+
+      <label>作品類型 <span class="req">*</span></label>
+      <div class="segment" id="typeSeg">
+        <button type="button" id="typePhoto" class="on" onclick="setType('攝影')">📷 攝影</button>
+        <button type="button" id="typeVideo" onclick="setType('短影音')">🎬 短影音</button>
+      </div>
+
+      <label>姓名 <span class="req">*</span></label>
+      <input type="text" id="fName" autocomplete="name">
+      <label>手機 <span class="req">*</span></label>
+      <input type="tel" id="fPhone" autocomplete="tel" placeholder="0912345678">
+      <label>職務或身分 <span class="req">*</span></label>
+      <select id="fRole">
+        <option value="">請選擇</option>
+        <option>扶輪社友</option><option>寶尊眷</option><option>執秘</option>
+        <option>扶青社員</option><option>扶少團員</option><option>其他合格身分</option>
+      </select>
+      <label>扶輪社中文名稱 <span class="req">*</span></label>
+      <input type="text" id="fClubZh" placeholder="例：台北○○扶輪社">
+      <label>扶輪社英文名稱 <span class="req">*</span></label>
+      <input type="text" id="fClubEn" placeholder="例：Rotary Club of Taipei ○○">
+      <label>所屬分區 <span class="req">*</span></label>
+      <select id="fZone">
+        <option value="">請選擇</option>
+        <option>第一分區</option><option>第二分區</option><option>第三分區</option>
+        <option>第四分區</option><option>第五分區</option><option>第六分區</option>
+        <option>第七分區</option><option>第八分區</option><option>第九分區</option>
+        <option>第十分區</option><option>第十一分區</option>
+      </select>
+
+      <label>作品標題 <span class="req">*</span><span class="charcount" id="cntTitle">0/8</span></label>
+      <input type="text" id="fTitle" maxlength="8" oninput="count('fTitle','cntTitle',8)">
+      <label>作品說明 <span class="req">*</span><span class="charcount" id="cntDesc">0/100</span></label>
+      <textarea id="fDesc" maxlength="100" oninput="count('fDesc','cntDesc',100)"
+        placeholder="這是什麼服務？誰在行動？發生了什麼？"></textarea>
+
+      <div id="photoBlock">
+        <label>照片檔案（JPG／PNG，10MB 以下）<span class="req">*</span></label>
+        <input type="file" id="fPhoto" accept="image/jpeg,image/png">
+        <div class="hint" id="photoHint"></div>
+      </div>
+      <div id="videoBlock" style="display:none">
+        <label>YouTube 網址 <span class="req">*</span></label>
+        <input type="url" id="fYoutube" placeholder="https://youtu.be/...">
+        <div class="hint">請先將影片上傳 YouTube（可設不公開），貼上連結即可。</div>
+      </div>
+
+      <div id="consentBlock">
+        <div class="consent"><input type="checkbox" id="cPolicy">
+          <span>我已閱讀並同意競賽辦法與投稿規範 <span class="req">*</span></span></div>
+        <div class="consent"><input type="checkbox" id="cRights">
+          <span>我確認作品為本人原創或具合法權利，音樂、影像、肖像等授權均已處理，且未曾於其他比賽獲獎 <span class="req">*</span></span></div>
+        <div class="consent"><input type="checkbox" id="cSubmit2">
+          <span>若作品入選，我同意配合地區及大會後續送件作業 <span class="req">*</span></span></div>
+        <div class="consent" style="border-top:1px dashed #cbd5e1;padding-top:12px;">
+          <input type="checkbox" id="cFb">
+          <span>（選填）我同意本作品於遴選前後，由3481地區公共形象管道進行非營利社群露出，並標註所屬扶輪社</span></div>
+      </div>
+
+      <button class="btn gold" id="btnSubmit" onclick="submitForm()">送出投稿</button>
+      <button class="btn ghost" id="btnCancelEdit" style="display:none" onclick="cancelEdit()">取消編輯</button>
+      <div class="msg" id="msgForm"></div>
+    </div>
+  </div>
+
+  <footer>
+    國際扶輪3481地區 公共形象委員會<br>
+    台灣扶輪 2027 People of Action 攝影暨短影音比賽
+  </footer>
+</div>
+
+<script>
+  // 後端 Apps Script JSON API（匿名呼叫，不受瀏覽器 Google 登入帳號影響）
+  var API_URL = 'https://script.google.com/macros/s/AKfycbySkVgswtp-oeYfN4CP10XPVuWELMQdKGoZ0MP77F69JrAkJA2zL1z8rhbYnfCP7HNj_w/exec';
+
+  async function api(action, params) {
+    var body = Object.assign({ action: action }, params || {});
+    var r = await fetch(API_URL, { method: 'POST', body: JSON.stringify(body) });
+    if (!r.ok) throw new Error('連線失敗（' + r.status + '），請稍後再試');
+    var j = await r.json();
+    if (!j.ok) throw new Error(j.error);
+    return j.data;
+  }
+
+  var state = { token: null, email: null, editingId: null, type: '攝影', info: null, list: [] };
+
+  // ---------- 初始化 ----------
+  api('info').then(function (info) {
+    state.info = info;
+    tickCountdown();
+    setInterval(tickCountdown, 60000);
+  }).catch(function () {
+    document.getElementById('countdown').textContent = '載入失敗，請重新整理';
+  });
+
+  function tickCountdown() {
+    var el = document.getElementById('countdown');
+    if (!state.info) return;
+    var ms = state.info.deadlineMs - Date.now();
+    if (ms <= 0) { el.textContent = '地區收件已截止'; return; }
+    var d = Math.floor(ms / 86400000);
+    var h = Math.floor(ms % 86400000 / 3600000);
+    el.textContent = '收件倒數 ' + d + ' 天 ' + h + ' 小時（至 2027/3/12）';
+  }
+
+  // ---------- 畫面切換 ----------
+  function show(id) {
+    ['viewEmail', 'viewOtp', 'viewMain'].forEach(function (v) {
+      document.getElementById(v).style.display = v === id ? '' : 'none';
+    });
+  }
+  function showTab(t) {
+    document.getElementById('tabList').className = t === 'list' ? 'on' : '';
+    document.getElementById('tabForm').className = t === 'form' ? 'on' : '';
+    document.getElementById('paneList').style.display = t === 'list' ? '' : 'none';
+    document.getElementById('paneForm').style.display = t === 'form' ? '' : 'none';
+    if (t === 'list') loadList();
+    if (t === 'form' && !state.editingId) resetForm();
+  }
+  function msg(id, text, ok) {
+    var el = document.getElementById(id);
+    el.textContent = text || '';
+    el.className = text ? ('msg ' + (ok ? 'ok' : 'err')) : 'msg';
+  }
+  function busy(btnId, label) {
+    var b = document.getElementById(btnId);
+    b.dataset.label = b.textContent;
+    b.disabled = true; b.textContent = label;
+  }
+  function done(btnId) {
+    var b = document.getElementById(btnId);
+    b.disabled = false; b.textContent = b.dataset.label;
+  }
+  function sessionExpired(e) {
+    if (String(e.message || e).indexOf('重新驗證') >= 0) { alert('登入已過期，請重新驗證 Email'); logout(); return true; }
+    return false;
+  }
+
+  // ---------- 登入 ----------
+  async function doLogin() {
+    var email = document.getElementById('inEmail').value.trim();
+    if (!email) { msg('msgEmail', '請輸入 Email'); return; }
+    msg('msgEmail', '');
+    busy('btnSendOtp', '登入中…');
+    try {
+      var res = await api('login', { email: email });
+      state.email = email.toLowerCase();
+      if (res && res.token) {
+        state.token = res.token;
+        document.getElementById('loginAs').textContent = res.email;
+        show('viewMain');
+        showTab('list');
+      } else {
+        document.getElementById('otpEmailShow').textContent = state.email;
+        show('viewOtp');
+        msg('msgOtp', '', true);
+      }
+    } catch (e) {
+      msg('msgEmail', e.message || String(e));
+    } finally {
+      done('btnSendOtp');
+    }
+  }
+  async function verifyOtp() {
+    var code = document.getElementById('inOtp').value.trim();
+    if (code.length !== 6) { msg('msgOtp', '請輸入 6 位數驗證碼'); return; }
+    busy('btnVerify', '驗證中…');
+    try {
+      var res = await api('verify', { email: state.email, code: code });
+      state.token = res.token;
+      document.getElementById('loginAs').textContent = res.email;
+      show('viewMain');
+      showTab('list');
+    } catch (e) {
+      msg('msgOtp', e.message || String(e));
+    } finally {
+      done('btnVerify');
+    }
+  }
+  function backToEmail() { show('viewEmail'); }
+  function logout() {
+    state.token = null; state.email = null; state.editingId = null;
+    document.getElementById('inOtp').value = '';
+    show('viewEmail');
+  }
+
+  // ---------- 我的投稿 ----------
+  async function loadList() {
+    document.getElementById('listLoading').style.display = '';
+    document.getElementById('listBody').innerHTML = '';
+    try {
+      var res = await api('list', { token: state.token });
+      renderList(res.list);
+    } catch (e) {
+      document.getElementById('listLoading').style.display = 'none';
+      if (!sessionExpired(e)) document.getElementById('listBody').innerHTML =
+        '<div class="msg err" style="display:block">' + esc(e.message || e) + '</div>';
+    }
+  }
+  function renderList(list) {
+    state.list = list;
+    document.getElementById('listLoading').style.display = 'none';
+    var body = document.getElementById('listBody');
+    if (!list.length) {
+      body.innerHTML = '<p style="color:var(--muted);text-align:center;padding:16px 0;">還沒有投稿。點「新增作品」開始！</p>';
+      return;
+    }
+    body.innerHTML = list.map(function (s, i) {
+      var wd = s.status === 'Withdrawn';
+      return '<div class="item">' +
+        '<div class="title">' + esc(s.title) +
+        '<span class="badge' + (wd ? ' wd' : '') + '">' + (wd ? '已撤回' : esc(s.type)) + '</span></div>' +
+        '<div class="meta">' + esc(s.id) + '｜' + esc(s.clubZh) + '｜更新：' + esc(s.updated) + '</div>' +
+        '<div style="font-size:14px;margin-top:6px;">' + esc(s.desc) + '</div>' +
+        (wd ? '' :
+          '<button class="btn small ghost" onclick="startEdit(' + i + ')">修改</button>' +
+          '<button class="btn small danger" onclick="withdraw(\'' + esc(s.id) + '\')">撤回</button>') +
+        '</div>';
+    }).join('');
+  }
+  async function withdraw(id) {
+    if (!confirm('確定撤回作品 ' + id + '？撤回後將不列入遴選。')) return;
+    try {
+      await api('withdraw', { token: state.token, id: id });
+      loadList();
+    } catch (e) {
+      if (!sessionExpired(e)) alert(e.message || e);
+    }
+  }
+
+  // ---------- 表單 ----------
+  function setType(t) {
+    state.type = t;
+    document.getElementById('typePhoto').className = t === '攝影' ? 'on' : '';
+    document.getElementById('typeVideo').className = t === '短影音' ? 'on' : '';
+    document.getElementById('photoBlock').style.display = t === '攝影' ? '' : 'none';
+    document.getElementById('videoBlock').style.display = t === '短影音' ? '' : 'none';
+  }
+  function count(inputId, cntId, max) {
+    document.getElementById(cntId).textContent =
+      document.getElementById(inputId).value.length + '/' + max;
+  }
+  function resetForm() {
+    state.editingId = null;
+    document.getElementById('formTitle').textContent = '新增作品';
+    document.getElementById('btnSubmit').textContent = '送出投稿';
+    document.getElementById('btnCancelEdit').style.display = 'none';
+    document.getElementById('typeSeg').style.pointerEvents = '';
+    document.getElementById('consentBlock').style.display = '';
+    ['fTitle', 'fDesc', 'fYoutube'].forEach(function (id) { document.getElementById(id).value = ''; });
+    document.getElementById('fPhoto').value = '';
+    ['cPolicy', 'cRights', 'cSubmit2', 'cFb'].forEach(function (id) { document.getElementById(id).checked = false; });
+    count('fTitle', 'cntTitle', 8); count('fDesc', 'cntDesc', 100);
+    document.getElementById('photoHint').textContent = '';
+    var last = state.list && state.list.length ? state.list[state.list.length - 1] : null;
+    if (last) {
+      document.getElementById('fName').value = last.name || '';
+      document.getElementById('fPhone').value = last.phone || '';
+      document.getElementById('fRole').value = last.role || '';
+      document.getElementById('fClubZh').value = last.clubZh || '';
+      document.getElementById('fClubEn').value = last.clubEn || '';
+      document.getElementById('fZone').value = last.zone || '';
+    }
+    msg('msgForm', '');
+  }
+  function startEdit(i) {
+    var s = state.list[i];
+    state.editingId = s.id;
+    showTab('form');
+    setType(s.type);
+    document.getElementById('formTitle').textContent = '修改作品 ' + s.id;
+    document.getElementById('btnSubmit').textContent = '儲存修改';
+    document.getElementById('btnCancelEdit').style.display = '';
+    document.getElementById('typeSeg').style.pointerEvents = 'none';
+    document.getElementById('consentBlock').style.display = 'none';
+    document.getElementById('fName').value = s.name; document.getElementById('fPhone').value = s.phone;
+    document.getElementById('fRole').value = s.role; document.getElementById('fClubZh').value = s.clubZh;
+    document.getElementById('fClubEn').value = s.clubEn; document.getElementById('fZone').value = s.zone;
+    document.getElementById('fTitle').value = s.title; document.getElementById('fDesc').value = s.desc;
+    document.getElementById('fYoutube').value = s.youtube || '';
+    document.getElementById('fPhoto').value = '';
+    document.getElementById('photoHint').textContent = s.type === '攝影' ? '不換照片就留空；選擇新檔案即更換。' : '';
+    document.getElementById('cFb').checked = !!s.fbConsent;
+    count('fTitle', 'cntTitle', 8); count('fDesc', 'cntDesc', 100);
+    msg('msgForm', '');
+    window.scrollTo(0, 0);
+  }
+  function cancelEdit() { resetForm(); showTab('list'); }
+
+  function submitForm() {
+    msg('msgForm', '');
+    var p = {
+      type: state.type,
+      name: val('fName'), phone: val('fPhone'), role: val('fRole'),
+      clubZh: val('fClubZh'), clubEn: val('fClubEn'), zone: val('fZone'),
+      title: val('fTitle'), desc: val('fDesc'),
+      youtube: val('fYoutube'),
+      policyConsent: document.getElementById('cPolicy').checked,
+      rightsConsent: document.getElementById('cRights').checked && document.getElementById('cSubmit2').checked,
+      fbConsent: document.getElementById('cFb').checked,
+    };
+    var isEdit = !!state.editingId;
+    if (!isEdit) {
+      if (!p.policyConsent || !document.getElementById('cRights').checked || !document.getElementById('cSubmit2').checked) {
+        msg('msgForm', '請勾選三項必要同意事項'); return;
+      }
+    }
+    var fileInput = document.getElementById('fPhoto');
+    var needPhoto = state.type === '攝影' && !isEdit;
+    var hasFile = fileInput.files && fileInput.files.length > 0;
+
+    if (needPhoto && !hasFile) { msg('msgForm', '請選擇照片檔案'); return; }
+
+    if (state.type === '攝影' && hasFile) {
+      var f = fileInput.files[0];
+      if (f.size > 10 * 1024 * 1024) { msg('msgForm', '照片超過 10MB，請壓縮後再上傳'); return; }
+      if (['image/jpeg', 'image/png'].indexOf(f.type) < 0) { msg('msgForm', '格式限 JPG 或 PNG'); return; }
+      var reader = new FileReader();
+      reader.onload = function () {
+        p.photo = { base64: reader.result.split(',')[1], mimeType: f.type, name: f.name };
+        doSubmit(p, isEdit);
+      };
+      reader.readAsDataURL(f);
+    } else {
+      doSubmit(p, isEdit);
+    }
+  }
+  async function doSubmit(p, isEdit) {
+    busy('btnSubmit', p.photo ? '照片上傳中…' : '送出中…');
+    try {
+      var res;
+      if (isEdit) {
+        res = await api('update', { token: state.token, id: state.editingId, payload: p });
+      } else {
+        res = await api('create', { token: state.token, payload: p });
+      }
+      state.editingId = null;
+      resetForm();
+      showTab('list');
+      alert(isEdit ? '修改已儲存' : '投稿成功！作品編號 ' + res.id + '，確認信已寄至您的 Email。');
+    } catch (e) {
+      if (!sessionExpired(e)) msg('msgForm', e.message || String(e));
+    } finally {
+      done('btnSubmit');
+    }
+  }
+
+  function val(id) { return document.getElementById(id).value.trim(); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+</script>
+</body>
+</html>
